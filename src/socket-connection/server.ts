@@ -1,31 +1,51 @@
-import { Server, Socket } from "socket.io";
-import { readline } from "../cli-util/readerUtil";
-import { get } from 'http';
+import express, { Application } from 'express';
+import { Server as SocketIOServer } from 'socket.io';
+import { createServer, Server as HTTPServer } from 'http';
+const socketioJwt = require('socketio-jwt');
 
-const PORT: number = parseInt(process.env.PORT || '3000', 10);
-const serverIO = new Server();
-let serverSocket: Socket;
+export class Server {
 
-export function establishServer() {
-    
-    serverIO.on("connection", (socket: Socket) => {
-        serverSocket = socket;
-        socket.on("message", function (message: string) {
-            console.log("Client said: ", message);
-            sendMessage();
-        });
-    });
-    get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
-        resp.on('data', (ip) => {
-            serverIO.listen(PORT);
-            console.log(`Server Established at ${ip}`)
-        });
-      });
-    
-}
+    private httpServer: HTTPServer;
+    private app: Application;
+    private io: SocketIOServer;
+    private secret: string | undefined;
 
-function sendMessage() {
-    readline.question(`SendMessage:`, (message: string) => {
-        serverSocket.emit("message", message);
-    });
+    private readonly DEFAULT_PORT = process.env.PORT || 3000;
+
+    constructor() {
+        this.initialize();
+        this.handleRoute();
+        this.handleSocketConnection();
+    }
+
+    private initialize(): void {
+        this.app = express();
+        this.httpServer = createServer(this.app);
+        this.io = new SocketIOServer(this.httpServer);
+        this.secret = process.env.SECRET || undefined;
+    }
+
+    private handleRoute() {
+        this.app.get('/', (req, res, next) => {
+            res.send(`Welcome to Private Signalling Server`)
+        })
+    }
+
+    private handleSocketConnection(): void {
+        if(this.secret) {
+            this.io.use(socketioJwt.authorize({
+                secret: this.secret,
+                handshake: true
+            }));
+            this.io.on('connection', (socket) => {
+                console.log('Client Connected');
+            });
+        }
+    }
+
+    public listen(callback: (port: number) => void): void {
+        this.httpServer.listen(this.DEFAULT_PORT, () =>
+            callback(this.DEFAULT_PORT)
+        );
+    }
 }
