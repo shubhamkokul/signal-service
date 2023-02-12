@@ -10,7 +10,7 @@ export class Server {
     private io: SocketIOServer;
     private secret: string | undefined;
 
-    private readonly DEFAULT_PORT = process.env.PORT || 3000;
+    private readonly DEFAULT_PORT: number | string = process.env.PORT || 3000;
 
     constructor() {
         this.initialize();
@@ -43,7 +43,7 @@ export class Server {
         }
     }
 
-    public listen(callback: (port: number) => void): void {
+    public listen(callback: (port: number | string) => void): void {
         this.httpServer.listen(this.DEFAULT_PORT, () =>
             callback(this.DEFAULT_PORT)
         );
