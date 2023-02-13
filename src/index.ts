@@ -1,4 +1,4 @@
-import { Server } from './socket-connection/server';
+import { Server } from './lib/socket-connection/server';
 const server = new Server();
 server.listen(port => {
     console.log(`Server is listening on http://localhost:${port}`);
