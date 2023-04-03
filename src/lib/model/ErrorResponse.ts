@@ -1,9 +1,13 @@
 export class ErrorResponse extends Error {
-    public statusCode: number;
+    public status: number;
     public message: string;
-    constructor(name: string, message: string, statusCode: number) {
+    public stack: string;
+    public config: JSON | undefined;
+    constructor(name: string, message: string, status: number, stack?: string, config?: JSON) {
         super(name);
         this.message = message;
-        this.statusCode = statusCode;
+        this.status = status;
+        this.stack = stack || '';
+        this.config = config || undefined;
     }
 }

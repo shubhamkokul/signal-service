@@ -1,28 +1,28 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { ErrorResponse } from '../model/ErrorResponse';
-import { TokenManagement } from '../token-management/token';
+import { TokenManagementService } from '../service/token-management/TokenManagementService';
 
 export class TokenRoute {
 
     public router: Router;
-    private tokenManagement: TokenManagement
+    private tokenManagementService: TokenManagementService;
 
-    constructor(tokenManagement: TokenManagement) {
+    constructor(tokenManagementService: TokenManagementService) {
         this.router = Router();
-        this.tokenManagement = tokenManagement;
+        this.tokenManagementService = tokenManagementService;
         this.routes();
     }
 
     private routes(): void {
         this.router.get('/', (req: Request, res: Response, next: NextFunction) => {
-            res.send(`Welcome to Private Signalling Server`)
+            res.send(`Welcome to Token Server`)
         })
         this.router.post('/generatetoken', (req: Request, res: Response, next: NextFunction) => {
             if (req.body.username) {
                 try {
                     res.status(201).json({
                         APISUCCESS: true,
-                        response: this.tokenManagement.createTokenFromUserName(req.body.username)
+                        response: this.tokenManagementService.createTokenFromUserName(req.body.username)
                     });
                 } catch (err) {
                     if (err instanceof Error) {
@@ -37,7 +37,7 @@ export class TokenRoute {
             if (req.query && req.query.token) {
                 res.status(200).json({
                     APISUCCESS: true,
-                    response: this.tokenManagement.verfiyToken(req.query.token as string, req.query.username as string)
+                    response: this.tokenManagementService.verfiyToken(req.query.token as string, req.query.username as string)
                 });
             } else {
                 next(new ErrorResponse('INVALID_REQUEST', 'Please pass in the `token` to verify', 404))
@@ -47,7 +47,7 @@ export class TokenRoute {
             if (req.query && req.query.token) {
                 res.status(200).json({
                     APISUCCESS: true,
-                    response: this.tokenManagement.getDataFromToken(req.query.token as string)
+                    response: this.tokenManagementService.getDataFromToken(req.query.token as string)
                 });
             } else {
                 next(new ErrorResponse('INVALID_REQUEST', 'Please pass in the `token` to verify', 404))
