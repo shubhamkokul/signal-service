@@ -1,7 +1,7 @@
 import { Jwt, JwtPayload, sign, verify } from "jsonwebtoken";
-import { VerifyResponse } from "../model/VerifyResponse";
+import { VerifyResponse } from "../../model/VerifyResponse";
 
-export class TokenManagement {
+export class TokenManagementService {
 
     private secret: string;
 
@@ -9,12 +9,8 @@ export class TokenManagement {
         this.secret = secret;
     }
 
-    private getTokenData(token: string): Jwt | undefined {
-        try {
-            return verify(token, this.secret, { complete: true });
-        } catch (err) {
-            return undefined;
-        }
+    private getTokenData(token: string): Jwt {
+        return verify(token, this.secret, { complete: true });
     }
 
     public createTokenFromUserName(username: string): string {
