@@ -1,0 +1,6 @@
+export enum AuthState {
+    AUTHENTICATED,
+    VERIFIED,
+    UNAUTHENTICATED,
+    ANONYMOUS
+}

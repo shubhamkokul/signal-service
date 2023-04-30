@@ -1,6 +1,6 @@
 import { ListModelsResponse, OpenAIApi } from "openai";
-import { Request, Response } from "express";
-import { ErrorResponse } from "../../model/ErrorResponse";
+import { Response } from "express";
+import { CustomRequest } from "src/lib/model/CustomRequest";
 
 export class OpenAIService {
 
@@ -10,7 +10,7 @@ export class OpenAIService {
         this.openApiClient = openApiClient;
     }
 
-    public async getModelList(req: Request, res: Response): Promise<ListModelsResponse> {
+    public async getModelList(req: CustomRequest, res: Response): Promise<ListModelsResponse> {
         return new Promise((resolve, reject) => {
             this.openApiClient.listModels().then((response) => {
                 resolve(response.data);
