@@ -1,6 +1,8 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
 import { ErrorResponse } from '../model/ErrorResponse';
 import { TokenManagementService } from '../service/token-management/TokenManagementService';
+import { CustomRequest } from '../model/CustomRequest';
+import { AuthState } from '../model/AuthState';
 
 export class TokenRoute {
 
@@ -14,11 +16,11 @@ export class TokenRoute {
     }
 
     private routes(): void {
-        this.router.get('/', (req: Request, res: Response, next: NextFunction) => {
+        this.router.get('/', (req: CustomRequest, res: Response, next: NextFunction) => {
             res.send(`Welcome to Token Server`)
         })
-        this.router.post('/generatetoken', (req: Request, res: Response, next: NextFunction) => {
-            if (req.body.username) {
+        this.router.post('/generatetoken', (req: CustomRequest, res: Response, next: NextFunction) => {
+            if (req.localCache.username) {
                 try {
                     res.status(201).json({
                         APISUCCESS: true,
@@ -33,7 +35,7 @@ export class TokenRoute {
                 next(new ErrorResponse('INVALID_REQUEST', 'Please pass in the `username` in req body', 404));
             }
         });
-        this.router.get('/validatetoken', (req: Request, res: Response, next: NextFunction) => {
+        this.router.get('/validatetoken', (req: CustomRequest, res: Response, next: NextFunction) => {
             if (req.query && req.query.token) {
                 res.status(200).json({
                     APISUCCESS: true,
@@ -43,11 +45,11 @@ export class TokenRoute {
                 next(new ErrorResponse('INVALID_REQUEST', 'Please pass in the `token` to verify', 404))
             }
         })
-        this.router.get('/gettokendata', (req: Request, res: Response, next: NextFunction) => {
-            if (req.query && req.query.token) {
+        this.router.get('/gettokendata', (req: CustomRequest, res: Response, next: NextFunction) => {
+            if (req.localCache && req.localCache.token) {
                 res.status(200).json({
                     APISUCCESS: true,
-                    response: this.tokenManagementService.getDataFromToken(req.query.token as string)
+                    response: this.tokenManagementService.getDataFromToken(req.localCache.token as string)
                 });
             } else {
                 next(new ErrorResponse('INVALID_REQUEST', 'Please pass in the `token` to verify', 404))
