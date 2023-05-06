@@ -12,17 +12,11 @@ export class AuthHandler {
             const token = authHeader && authHeader.split(' ')[1];
             const username = req.localCache.username;
             try {
-                if (!token || !username) {
-                    req.localCache.authState = AuthState.UNAUTHENTICATED.toString();
-                    req.localCache.token = token;
-                    return next();
-                }
-                if (tokenManagementService.verfiyToken(token as string, username as string)) {
+                if (token && username && tokenManagementService.verfiyToken(token as string, username as string)) {
                     req.localCache.authState = AuthState.AUTHENTICATED.toString();
                     req.localCache.token = token;
                 } else {
                     req.localCache.authState = AuthState.UNAUTHENTICATED.toString();
-                    req.localCache.token = token;
                 }
             } catch (err) {
                 console.log(err);

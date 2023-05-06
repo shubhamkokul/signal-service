@@ -11,7 +11,7 @@ import { ConnectService } from './lib/service/ConnectService';
 import { SocketConnectRoute } from './lib/route/SocketConnectRoute';
 import { ErrorHandler } from './lib/middleware/ErrorHandler';
 import { AuthHandler } from './lib/middleware/AuthHandler';
-import { SetupUtilMiddlewares } from './lib/middleware/setupUtilMiddleware';
+import { SetupUtilMiddlewares } from './lib/middleware/SetupUtilMiddleware';
 
 //Todo: Refactor this to only handle socket connection and move the middleware to separate file
 export class Server {
