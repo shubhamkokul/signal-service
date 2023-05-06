@@ -6,6 +6,7 @@ import { AuthState } from "../model/AuthState";
 import { CustomRequest } from "../model/CustomRequest";
 import { ExtractChatMessageUtility } from "../util/ExtractChatMessageUtility";
 
+
 export class OpenAIRoute {
     public router: Router;
     private openAIService: OpenAIService;
