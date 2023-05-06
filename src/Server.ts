@@ -11,7 +11,7 @@ import { ConnectService } from './lib/service/ConnectService';
 import { SocketConnectRoute } from './lib/route/SocketConnectRoute';
 import { ErrorHandler } from './lib/middleware/ErrorHandler';
 import { AuthHandler } from './lib/middleware/AuthHandler';
-import { SetupUtilMiddlewares } from './lib/middleware/setupUtilMiddleware';
+import { SetupUtilMiddlewares } from './lib/middleware/SetupUtilMiddleware';
 
 //Todo: Refactor this to only handle socket connection and move the middleware to separate file
 export class Server {
@@ -40,9 +40,9 @@ export class Server {
 
     private initialize(): void {
         this.app = express();
-        this.secret = process.env.SECRET || '';
-        this.apiKey = process.env.API_KEY || '';
-        this.orgKey = process.env.ORG_KEY || '';
+        this.secret = process.env.SECRET || '56b73824062dc759f0ff8c74999a6affd2f8932b1e15e2f2e919c7a62e2489ed';
+        this.apiKey = process.env.API_KEY || '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';
+        this.orgKey = process.env.ORG_KEY || 'org-fZB88RYisrRJbkJFvqMwGQh6';
         this.httpServer = createServer(this.app);
     }
 
